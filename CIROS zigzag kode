@@ -1,0 +1,55 @@
+10 ' *************************** 
+20 ' ** Pallet Assembly (PLT 1) - Zigzag **
+30 ' ** Oppdatert av [Ditt Navn] **
+40 ' ** Dato: [Sett inn dato] **
+50 ' ***************************
+60 '
+70 ' ** Definerer pall og variabler
+80 DEF PLT 1, P4, P5, P7, P6, 2, 2, 1  ' **Byttet P6 og P7 for zigzag-mønster**
+90 DEF INTE NumPos                      ' Variabel for posisjonstelling
+100 DEF POS PPallet                      ' Posisjon for pallestabling
+110 ' 
+120 ' ** Plassere 4 kuber i pallen (zigzag-mønster)
+130 HOPEN 1                               ' Åpner gripper for å forberede plukk
+140 FOR NumPos = 1 TO 4                    ' Løkke for å plassere 4 kuber
+150 ' ** Vent på at en kube skal være klar
+160 WAIT M_IN(1) = 1                       ' Venter til en kube er tilgjengelig
+170 M_OUT(1) = 0                           ' Stopper tilførsel av nye kuber
+180 ' ** Plukke opp kube
+190 MOV P2,-50                              ' Beveg roboten til plukke-posisjon
+200 MVS P2                                  ' Beveger roboten ned til plukke-høyde
+210 HCLOSE 1                                ' Lukker gripper for å gripe kube
+220 MVS P2,-50                              ' Løfter kuben opp
+230 ' ** Tillat neste kube å rulle frem
+240 M_OUT(1) = 1                            ' Starter materen igjen
+250 ' ** Bestem posisjon i pallen via PLT 1
+260 PPallet = PLT 1, NumPos                 ' Automatisk palletering i zigzag-mønster
+270 ' ** Plassere kube i pallen
+280 MOV PPallet,-50                         ' Beveg til palleposisjon
+290 MVS PPallet                             ' Beveger ned til plassering
+300 HOPEN 1                                 ' Åpner gripper for å slippe kube
+310 MVS PPallet,-50                         ' Løfter gripper opp igjen
+320 NEXT NumPos                             ' Fortsetter til neste kube
+330 '
+340 ' ** Hente 4 kuber tilbake fra pallen til materen
+350 MOV P1                                  ' Beveg roboten til startposisjon
+360 FOR NumPos = 1 TO 4                     ' Løkke for å hente tilbake 4 kuber
+370 ' ** Bestem posisjon i pallen via PLT 1
+380 PPallet = PLT 1, NumPos                 ' Automatisk palletering i zigzag-mønster
+390 ' ** Plukke kube fra pallen
+400 MOV PPallet,-50                         ' Beveg til palleposisjon
+410 MVS PPallet                             ' Beveger ned til plukke-høyde
+420 HCLOSE 1                                ' Lukker gripper for å gripe kube
+430 MVS PPallet,-50                         ' Løfter kuben opp
+440 ' ** Flytte til materen
+450 M_OUT(1) = 0                            ' Stopper mater for å sikre trygg plassering
+460 MOV P3,-50                              ' Beveg til materens posisjon
+470 MVS P3                                  ' Beveger ned til plassering
+480 HOPEN 1                                 ' Åpner gripper for å slippe kube
+490 MVS P3,-50                              ' Løfter gripper opp igjen
+500 M_OUT(1) = 1                            ' Starter materen igjen
+510 NEXT NumPos                             ' Fortsetter til neste kube
+520 '
+530 ' ** Flytter roboten tilbake til startposisjon
+540 MOV P1
+550 END
